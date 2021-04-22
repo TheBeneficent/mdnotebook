@@ -40,7 +40,8 @@ public class MainApplication extends Application implements ReactApplication {
         /* @Override
               protected List<ReactPackage> getPackages() {
                 return Arrays.<ReactPackage>asList(
-                  new MainReactPackage(), // <---- add comma
+                  new MainReactPackage(),
+            new RNFileSystemPackage(), // <---- add comma
                   new RNFSPackage() // <---------- add package
                 );
               } */
