@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, useColorScheme, View } from "react-native";
+import {Button, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, useColorScheme, View,} from "react-native";
 import showdown from "showdown";
 import WebView from "react-native-webview";
 import RNFS from "react-native-fs";
-import { DIR } from "../constants/constants";
+import styles from '../assets/styles';
 
-const NoteItem = props => {
+const NoteItem = ({navigation}) => {
   const [prevText, setPrevText] = useState('');
 
   useEffect(()=>{
@@ -17,9 +17,9 @@ const NoteItem = props => {
   };
 console.log(prevText)
   return (
-    <View>
-      <Text>{prevText}</Text>
-    </View>
+    <React.Fragment>
+      <Button title={prevText} onPress={navigation.navigate('')} />
+    </React.Fragment>
   );
 
 };
