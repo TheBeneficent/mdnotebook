@@ -14,7 +14,7 @@ import NoteItem from './NoteItem';
 
 
 
-const HomeScreen = (props) => {
+const HomeScreen = ({navigation}) => {
     const ListNotes = () => <NotesConsumer>
         {(Notes)=>Notes.map((value, index) => {
             if (value.isFile())
