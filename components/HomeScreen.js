@@ -9,7 +9,7 @@ import showdown from "showdown";
 import WebView from "react-native-webview";
 import styles from '../assets/styles';
 import RNFS from "react-native-fs";
-import {NotesConsumer} from './Contexts';
+import {NotesConsumer, NoteItemProvider} from './Contexts';
 import NoteItem from './NoteItem';
 
 

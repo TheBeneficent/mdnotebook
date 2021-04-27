@@ -5,17 +5,17 @@ import WebView from "react-native-webview";
 import RNFS from "react-native-fs";
 import { useEffect } from "react/cjs/react.production.min";
 import styles from '../assets/styles';
-import {NotePathConsumer} from './Contexts';
+import {NoteConsumer} from './Contexts';
 
 const Note=props=>{
 
   const converter = new showdown.Converter();
 
-  const [content, setContent]=useState(RNFS.readFile(props.path));
+  // const [content, setContent]=useState(RNFS.readFile(props.note.path));
   const [showPreview, setShowPreview]=useState(false);
 
   useEffect(()=>{
-
+console.log('note: ',props.note)
   },[]);
   
 
