@@ -1,27 +1,27 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import {Button, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, useColorScheme, View,} from "react-native";
 import showdown from "showdown";
 import WebView from "react-native-webview";
 import RNFS from "react-native-fs";
 import styles from '../assets/styles';
-import {NoteItemConsumer} from './Contexts';
+import { standardScreenName } from "../constants/constants";
 
-const NoteItem = ({navigation}) => {
-  const [prevText, setPrevText] = useState(useContext(NoteItemConsumer));
-
+const NoteItem = ( props) => {
+  const [prevText, setPrevText] = useState('');
+// console.log('NoteItem props: ', props.note)
   useEffect(()=>{
-    console.log('prevText: ', prevText)
-    // RNFS.readFile(props.note.path,'utf8').then(res=>setPrevText(res)).catch(e=>alert('An error occured reading files!'));
+    RNFS.readFile(props.note.path,'utf8').then(res=>setPrevText(res)).catch(e=>alert('An error occured reading files!'));
   },[])
 
   const trunc = str => {
 
   };
-console.log('prevText: ', prevText)
+
+  //const handleNoteItemPress=
   return (
-    
-      <Button title={prevText} onPress={navigation.navigate('')} />
-    
+    <React.Fragment>
+      <Button title={prevText} onPress={()=>props.navigation.navigate(standardScreenName(props.note.mtime))} />
+    </React.Fragment>
   );
 
 };
