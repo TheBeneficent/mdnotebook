@@ -27,7 +27,7 @@ const HomeScreen = (props) => {
     const handleNewBtn = () => {
         const noteName = newName('note-');
         const path = DIR + `/${noteName}.md`;
-        RNFS.writeFile(path,'','utf8').then(success=>props.navigation.navigate('newNote',{notePath:path})).catch(e=>alert('Problem creating or loading the note!'));
+        RNFS.writeFile(path,'','utf8').then(success=>props.navigation.navigate('newNote',{path:path})).catch(e=>alert('Problem creating or loading the note!'));
         
     }
 
