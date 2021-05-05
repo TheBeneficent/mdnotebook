@@ -18,6 +18,7 @@ import Note from './components/Note';
 import HomeScreen from './components/HomeScreen';
 import styles from './assets/styles';
 import {NotePathProvider, NotesProvider} from './components/Contexts';
+import NewNote from "./components/NewNote";
 
 const Stack = createStackNavigator();
 
@@ -42,6 +43,7 @@ const App = () => {
         <Stack.Navigator initialRouteName="notes">
           <Stack.Screen name="notes" options={{ title: "Notes" }} component={HomeScreen}/>
           {notes.length ? notes.map((value, index) => <Stack.Screen key={index} name={standardScreenName(value.mtime)} options={{ title: '' }}>{props=><Note {...props} note={value} />}</Stack.Screen> ) : <></>}
+          <Stack.Screen name='newNote' options={{title:''}} component={NewNote}/>
         </Stack.Navigator>
       </NavigationContainer>
     </NotesProvider>

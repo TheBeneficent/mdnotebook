@@ -8,11 +8,14 @@ import showdown from "showdown";
 import WebView from "react-native-webview";
 import styles from '../assets/styles';
 import RNFS from "react-native-fs";
-import { NotesConsumer } from './Contexts';
+import { NotesContext, NotesConsumer } from './Contexts';
 import NoteItem from './NoteItem';
-import { DIR, newName } from "../constants/constants";
+import { DIR, newName, standardScreenName } from "../constants/constants";
+
 
 const HomeScreen = (props) => {
+    const [newNote, setNewNote]=useState('');
+    
     const ListNotes = () => {
         return (<NotesConsumer>
             {(Notes) => Notes.map((value, index) => {
@@ -24,9 +27,8 @@ const HomeScreen = (props) => {
     const handleNewBtn = () => {
         const noteName = newName('note-');
         const path = DIR + `/${noteName}.md`;
-        RNFS.writeFile(path,'','utf8').then(success=>'')
+        RNFS.writeFile(path,'','utf8').then(success=>props.navigation.navigate('newNote',{notePath:path})).catch(e=>alert('Problem creating or loading the note!'));
         
-        // props.navigation.navigate(standardScreenName(props.note.mtime))
     }
 
     React.useLayoutEffect(() => {
