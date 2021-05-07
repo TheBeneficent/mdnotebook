@@ -27,23 +27,33 @@ const App = () => {
 
   const [notes, setNotes] = useState([]);
   useEffect(() => {
-    RNFS.readDir(DIR).then(result => setNotes(result)).catch(e => alert('An error occurred reading directory!'));
-    notes.map((value, index) =>console.log('note map: ', value))
+    RNFS.readDir(DIR).then(result => {
+      let newResult=result.map(value=>({...value, checked:false}));
+      setNotes(newResult);
+    }).catch(e => alert('An error occurred reading directory!'));
+    
     
   }, []);
-  notes.map((value, index) =>console.log('note map: ', value))
+  console.log('notes: ', notes);
+  // notes.map((value, index) =>console.log('note map: ', value))
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const updateNotes=(index,checkStat)=>{
+    let tempNotes=notes;
+    tempNotes[index].checked=checkStat;
+    setNotes(tempNotes);
+  }
+
   return (
-    <NotesProvider value={notes}>
+    <NotesProvider value={{notes:notes, updateNotes:updateNotes}}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="notes">
-          <Stack.Screen name="notes" options={{ title: "Notes" }} component={HomeScreen}/>
-          {notes.length ? notes.map((value, index) => <Stack.Screen key={index} name={standardScreenName(value.mtime)} options={{ title: '' }}>{props=><Note {...props} note={value} />}</Stack.Screen> ) : <></>}
-          <Stack.Screen name='newNote' options={{title:''}} component={NewNote}/>
+          <Stack.Screen name="notes" options={{ title: "Notes", headerStyle:styles.homeScreenHeader }} component={HomeScreen}/>
+          {notes.length ? notes.map((value, index) => <Stack.Screen key={index} name={standardScreenName(value.mtime)} options={{ title: '', headerStyle: styles.homeScreenHeader }}>{props=><Note {...props} note={value} />}</Stack.Screen> ) : <></>}
+          <Stack.Screen name='newNote' options={{title:'', headerStyle: styles.homeScreenHeader }} component={NewNote}/>
         </Stack.Navigator>
       </NavigationContainer>
     </NotesProvider>

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View, Button } from "react-native";
+import React from "react";
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View, Button, Pressable } from "react-native";
 import { Colors, DebugInstructions, Header, LearnMoreLinks, ReloadInstructions, } from "react-native/Libraries/NewAppScreen";
 import "react-native-gesture-handler";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import showdown from "showdown";
 import WebView from "react-native-webview";
@@ -14,11 +14,14 @@ import { DIR, newName, standardScreenName } from "../constants/constants";
 
 
 const HomeScreen = (props) => {
-    const [newNote, setNewNote]=useState('');
+
+    const [headerBtn, setHeaderBtn]=React.useState({title: '+', style:styles.addNewBtn});
+    
+    useFocusEffect(()=>{console.log('focus')})
     
     const ListNotes = () => {
         return (<NotesConsumer>
-            {(Notes) => Notes.map((value, index) => {
+            {(data) => data.notes.map((value, index) => {
                 if (value.isFile())
                     return <NoteItem key={index} note={value} navigation={props.navigation} />;
             })}</NotesConsumer>);
@@ -34,15 +37,18 @@ const HomeScreen = (props) => {
     React.useLayoutEffect(() => {
         props.navigation.setOptions({
             headerRight: () => (
-                <Button onPress={handleNewBtn} title='+' />
+                <View style={styles.homeHeaderBtnCont}>
+                    <Pressable onPress={handleNewBtn} style={styles.addNewBtn}><Text style={styles.addNewBtnText}>+</Text></Pressable>
+                </View>
+                
             )
         })
     }, [props.navigation]);
 
     return (
-        <View style={{ flex: 1 }}>
+        <ScrollView style={styles.homeScreen}>
             <ListNotes />
-        </View>
+        </ScrollView>
     );
 }
 export default HomeScreen;
