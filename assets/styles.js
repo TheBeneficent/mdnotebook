@@ -28,6 +28,11 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: 'rgba(0, 200, 245, 0.2)',
     },
+    webView: {
+      marginTop: 20, 
+      width: 100*vw, 
+      height: 100*vh
+    },
     noteInput:{
       flex: 1,
       justifyContent: 'flex-start',
@@ -49,6 +54,10 @@ const styles = StyleSheet.create({
       margin: 5,
 
     },
+    deleteIcon: {
+      color: '#f70727',
+      backgroundColor: 'rgba(0, 200, 245, 0)'
+    },
     homeHeaderBtnCont: {
       flexDirection: 'row',
       marginVertical: 'auto',
@@ -64,6 +73,47 @@ const styles = StyleSheet.create({
       textAlignVertical: 'center',
       fontSize: 22,
 
+    },
+    centeredView: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 22
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: "white",
+      borderRadius: 20,
+      padding: 35,
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5
+    },
+    button: {
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2
+    },
+    buttonOpen: {
+      backgroundColor: "#F194FF",
+    },
+    buttonClose: {
+      backgroundColor: "#2196F3",
+    },
+    textStyle: {
+      color: "white",
+      fontWeight: "bold",
+      textAlign: "center"
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: "center"
     }
   });
 
