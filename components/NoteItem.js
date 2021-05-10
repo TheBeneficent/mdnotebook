@@ -14,7 +14,7 @@ const NoteItem = ( props) => {
   const [modalVisible, setModalVisible]=useState(false);
 // console.log('NoteItem props: ', props.note)
   useEffect(()=>{
-    RNFS.readFile(props.note.path,'utf8').then(res=>setPrevText(res)).catch(e=>alert('An error occured reading files!'));
+    RNFS.readFile(props.note.path,'utf8').then(res=>setPrevText(res)).catch(e=>{alert('An error occured reading files!'); props.navigation.navigate('notes')});
   },[]);
 
   const NotePrev=(props)=>{

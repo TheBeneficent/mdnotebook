@@ -2,13 +2,13 @@ import React from "react";
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View, Button, Pressable } from "react-native";
 import { Colors, DebugInstructions, Header, LearnMoreLinks, ReloadInstructions, } from "react-native/Libraries/NewAppScreen";
 import "react-native-gesture-handler";
-import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
+import { NavigationContainer, useFocusEffect, useIsFocused } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import showdown from "showdown";
 import WebView from "react-native-webview";
 import styles from '../assets/styles';
 import RNFS from "react-native-fs";
-import { NotesContext, NotesConsumer } from './Contexts';
+import { NotesContext, NotesConsumer, ReRenderContext } from './Contexts';
 import NoteItem from './NoteItem';
 import { DIR, newName, standardScreenName } from "../constants/constants";
 
@@ -16,15 +16,24 @@ import { DIR, newName, standardScreenName } from "../constants/constants";
 const HomeScreen = (props) => {
 
     const [headerBtn, setHeaderBtn]=React.useState({title: '+', style:styles.addNewBtn});
+    const [reRender, setReRender]=React.useState(false);
     
-    useFocusEffect(()=>{console.log('focus')})
+    // useFocusEffect(React.useCallback(() => { setReRender(true); } , [reRender]))
+    // React.useEffect(()=>{setReRender(reRender-1)},[])
+    // useFocusEffect(()=>{setReRender(reRender+1)});
+    const isFocused = useIsFocused()
+
+    React.useEffect(() => {
+        setReRender(!reRender)
+    } , [isFocused])
     
     const ListNotes = () => {
-        return (<NotesConsumer>
-            {(data) => data.notes.map((value, index) => {
+        const notesConsumer=React.useContext(NotesContext);
+        return (<View>
+            {notesConsumer.notes.map((value, index) => {
                 if (value.isFile())
                     return <NoteItem key={index} note={value} navigation={props.navigation} />;
-            })}</NotesConsumer>);
+            })}</View>);
     }
 
     const handleNewBtn = () => {
