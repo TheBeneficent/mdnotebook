@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     },
     homeScreenHeader:{
       backgroundColor: 'rgba(0, 200, 245, 0.7)',
+      color: '#fff'
     },
     note:{
       flex: 1,

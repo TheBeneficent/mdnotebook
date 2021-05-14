@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View, Button, Pressable } from "react-native";
 import { Colors, DebugInstructions, Header, LearnMoreLinks, ReloadInstructions, } from "react-native/Libraries/NewAppScreen";
 import "react-native-gesture-handler";
@@ -11,39 +11,61 @@ import RNFS from "react-native-fs";
 import { NotesContext, NotesConsumer, ReRenderContext } from './Contexts';
 import NoteItem from './NoteItem';
 import { DIR, newName, standardScreenName } from "../constants/constants";
+import { Navigation } from 'react-native-navigation';
 
 
 const HomeScreen = (props) => {
-
     const [headerBtn, setHeaderBtn]=React.useState({title: '+', style:styles.addNewBtn});
     const [reRender, setReRender]=React.useState(false);
-    
-    // useFocusEffect(React.useCallback(() => { setReRender(true); } , [reRender]))
-    // React.useEffect(()=>{setReRender(reRender-1)},[])
-    // useFocusEffect(()=>{setReRender(reRender+1)});
-    const isFocused = useIsFocused()
+    const [notes, setNotes] = useState([]);
+    const ReRender=React.useContext(ReRenderContext);
 
-    React.useEffect(() => {
-        setReRender(!reRender)
-    } , [isFocused])
+  useEffect(() => {
+    RNFS.readDir(DIR).then(result => {
+      let newResult=result.map(value=>({...value, checked:false}));
+      setNotes(newResult);
+    }).catch(e => alert('An error occurred reading directory!'));
+    setReRender(false);
+
+    const listener = {
+      componentDidAppear: () => {
+        console.log('RNN', `componentDidAppear`);
+        RNFS.readDir(DIR).then(result => {
+          let newResult=result.map(value=>({...value, checked:false}));
+          setNotes(newResult);
+        }).catch(e => alert('An error occurred reading directory!'));
+      },
+      componentDidDisappear: () => {
+        console.log('RNN', `componentDidDisappear`);
+      }
+    }
+    const unsubscribe = Navigation.events().registerComponentListener(listener, props.componentId);
+    return () => {
+      unsubscribe.remove();
+    };
+  }, []);
     
     const ListNotes = () => {
         const notesConsumer=React.useContext(NotesContext);
+        console.log('notesConsumer: ', notesConsumer)
         return (<View>
-            {notesConsumer.notes.map((value, index) => {
+            {notes.map((value, index) => {
                 if (value.isFile())
-                    return <NoteItem key={index} note={value} navigation={props.navigation} />;
+                    {
+
+                      return <NoteItem key={index} note={value} componentId={props.componentId} />;
+                    }
             })}</View>);
     }
 
     const handleNewBtn = () => {
         const noteName = newName('note-');
-        const path = DIR + `/${noteName}.md`;
+        const path = DIR + `/${noteName}.md`;return <NoteItem key={index} note={value} navigation={props.navigation} />;
         RNFS.writeFile(path,'','utf8').then(success=>props.navigation.navigate('newNote',{path:path})).catch(e=>alert('Problem creating or loading the note!'));
         
     }
 
-    React.useLayoutEffect(() => {
+    /* React.useLayoutEffect(() => {
         props.navigation.setOptions({
             headerRight: () => (
                 <View style={styles.homeHeaderBtnCont}>
@@ -52,7 +74,7 @@ const HomeScreen = (props) => {
                 
             )
         })
-    }, [props.navigation]);
+    }, [props.navigation]); */
 
     return (
         <ScrollView style={styles.homeScreen}>
@@ -60,4 +82,24 @@ const HomeScreen = (props) => {
         </ScrollView>
     );
 }
+
+HomeScreen.options = {
+    topBar: {
+      title: {
+        text: 'Notes',
+        color: styles.homeScreenHeader.color
+      },
+      background: {
+        color: styles.homeScreenHeader.backgroundColor
+      },
+      rightButtons: [
+        {
+          component: 'NewBtn',
+          passProps: {
+            componentId: props.componentId
+          },
+        },
+      ]
+    }
+  }
 export default HomeScreen;

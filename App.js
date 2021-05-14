@@ -49,13 +49,15 @@ const App = () => {
 
   return (
     <NotesProvider value={{notes:notes, updateNotes:updateNotes}}>
-      <NavigationContainer>
+      {/* <NavigationContainer>
         <Stack.Navigator initialRouteName="notes">
           <Stack.Screen name="notes" options={{ title: "Notes", headerStyle:styles.homeScreenHeader}} component={HomeScreen}/>
           {notes.length ? notes.map((value, index) => <Stack.Screen key={index} name={standardScreenName(value.mtime)} options={{ title: '', headerStyle: styles.homeScreenHeader }}>{props=><Note {...props} note={value} />}</Stack.Screen> ) : <></>}
           <Stack.Screen name='newNote' options={{title:'', headerStyle: styles.homeScreenHeader }} component={NewNote}/>
         </Stack.Navigator>
-      </NavigationContainer>
+      </NavigationContainer> */}
+
+      
     </NotesProvider>
 
   );

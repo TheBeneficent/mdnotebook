@@ -7,11 +7,15 @@ import CheckBox from '@react-native-community/checkbox';
 import styles from '../assets/styles';
 import { standardScreenName } from "../constants/constants";
 import DeleteDial from './DeleteDial';
+import { Navigation } from 'react-native-navigation';
+import {ReRenderProvider} from '../components/Contexts';
 
 const NoteItem = ( props) => {
   const [prevText, setPrevText] = useState('');
   const [noteCheck, setNoteCheck]=useState(false);
   const [modalVisible, setModalVisible]=useState(false);
+  const [reRender, setReRender]=useState(false);
+
 // console.log('NoteItem props: ', props.note)
   useEffect(()=>{
     RNFS.readFile(props.note.path,'utf8').then(res=>setPrevText(res)).catch(e=>{alert('An error occured reading files!'); props.navigation.navigate('notes')});
@@ -34,7 +38,22 @@ const NoteItem = ( props) => {
   }
 
   const pressHandle=()=>{
-    props.navigation.navigate(standardScreenName(props.note.mtime))
+    Navigation.push(props.componentId, {
+      component: {
+        name:'Note',
+        options:{
+          topBar:{
+            title:{
+              name:'Note'
+            }
+          }
+        },
+        passProps:{
+          note: props.note
+        }
+      }
+    })
+    // props.navigation.navigate(standardScreenName(props.note.mtime))
   }
 
   const longPressHandle=()=>{
@@ -42,11 +61,16 @@ const NoteItem = ( props) => {
   }
 
   const deleteHandle=()=>{
+    
     RNFS.unlink(props.note.path).then(() => {setModalVisible(false); ToastAndroid.show("Note deleted successfully!", ToastAndroid.SHORT)}).catch(e=>alert("Error deleting the note!"));
+    // setReRender(!reRender);
+    Navigation.navigate('Note');
+    
   }
 
   //const handleNoteItemPress=
   return (
+    <ReRenderProvider value={reRender}>
     <View>
       <Modal
         animationType="slide"
@@ -81,6 +105,7 @@ const NoteItem = ( props) => {
         <NotePrev />
         </Pressable>
     </View>
+    </ReRenderProvider>
   );
 
 };

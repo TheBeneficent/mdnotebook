@@ -21,13 +21,13 @@ const NewNote=({route, navigation})=>{
     setShowPreview(!showPreview);
   }
 
-  React.useLayoutEffect(()=>{
+  /* React.useLayoutEffect(()=>{
     navigation.setOptions({
       headerRight: ()=>(
         <Button onPress={handlePreviewToggleButton} title={showPreview ? 'Edit' : 'Preview'} />
       )
     })
-  },[navigation]);
+  },[navigation]); */
 
   useEffect(()=>{
     RNFS.readFile(route.params.path, 'utf8').then(res=>setContent(String(res))).catch(e=>alert('Error reading the file!'));

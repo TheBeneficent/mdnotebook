@@ -9,10 +9,11 @@ import { Button, Menu, Divider, Provider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import HTML from 'react-native-render-html';
 import DeleteDial from './DeleteDial';
+import { Navigation } from 'react-native-navigation';
 
 const Note = props => {
   const [content, setContent] = useState('');
-  const [showPreview, setShowPreview] = useState(true);
+  const [showPreview, setShowPreview] = useState(false);
   const [saveAction, setSaveAction] = useState(false);
   const [renderedPreview, setRenderedPreview] = useState('<html dir="auto">' + md2html(content) + '</html>');
   const [visible, setVisible] = React.useState(false);
@@ -39,21 +40,39 @@ const Note = props => {
     setModalVisible(true);
   }
 
-  React.useLayoutEffect(() => {
+  /* React.useLayoutEffect(() => {
     props.navigation.setOptions({
       headerRight: () => (
         <View style={styles.homeHeaderBtnCont}>
           <Button onPress={handlePreviewToggleButton}>{showPreview ? 'Edit' : 'Preview'}</Button>
           <Icon.Button onPress={handleDeleteNote} name='trash' size={25} style={styles.deleteIcon} />
-          {/* <Button onPress={handleDeleteNote}><Icon name='trash' size={30} style={styles.deleteIcon} /></Button> */}
+          
         </View>
         
       )
     })
-  }, [props.navigation]);
+  }, [props.navigation]); */
+
 
   useEffect(() => {
     RNFS.readFile(props.note.path, 'utf8').then(res => {setContent(String(res)); setRenderedPreview('<html dir="auto">' + md2html(res) + '</html>')}).catch(e => alert('Error reading the file!'));
+
+    const listener = {
+      componentDidAppear: () => {
+        console.log('RNN', `componentDidAppear`);
+        
+      },
+      componentDidDisappear: () => {
+        console.log('RNN', `componentDidDisappear`);
+        
+      }
+    }
+    const unsubscribe = Navigation.events().registerComponentListener(listener, props.componentId);
+    return () => {
+      // Make sure to unregister the listener during cleanup
+      unsubscribe.remove();
+    };
+
   }, []);
 
   useEffect(() => {
