@@ -7,4 +7,4 @@ const NotesConsumer=NotesContext.Consumer;
 const NotePathProvider=NotePathContext.Provider;
 const NotePathConsumer=NotePathContext.Consumer;
 
-export {NotesProvider, NotesConsumer, NotePathProvider, NotePathConsumer};
+export {NotesContext, NotePathContext, NotesProvider, NotesConsumer, NotePathProvider, NotePathConsumer};
