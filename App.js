@@ -17,7 +17,7 @@ import NoteItem from "./components/NoteItem";
 import Note from './components/Note';
 import HomeScreen from './components/HomeScreen';
 import styles from './assets/styles';
-import {NotePathProvider, NotesProvider} from './components/Contexts';
+import {NotePathProvider, NotesProvider, NotesContext} from './components/Contexts';
 import NewNote from "./components/NewNote";
 
 const Stack = createStackNavigator();
@@ -26,15 +26,16 @@ const App = () => {
   const isDarkMode = useColorScheme() === "dark";
 
   const [notes, setNotes] = useState([]);
+  const NotesCons=React.useContext(NotesContext);
   useEffect(() => {
     RNFS.readDir(DIR).then(result => {
       let newResult=result.map(value=>({...value, checked:false}));
       setNotes(newResult);
     }).catch(e => alert('An error occurred reading directory!'));
-    
-    
-  }, []);
-  console.log('notes: ', notes);
+
+
+  }, [NotesCons]);
+  console.log('appjs notes: ', NotesCons);
   // notes.map((value, index) =>console.log('note map: ', value))
 
   const backgroundStyle = {
@@ -48,15 +49,15 @@ const App = () => {
   }
 
   return (
-    <NotesProvider value={{notes:notes, updateNotes:updateNotes}}>
+
       <NavigationContainer>
         <Stack.Navigator initialRouteName="notes">
-          <Stack.Screen name="notes" options={{ title: "Notes", headerStyle:styles.homeScreenHeader}} component={HomeScreen}/>
+          <Stack.Screen name="notes" options={{ title: "Notes", headerStyle:styles.homeScreenHeader}}>{props=><HomeScreen {...props} notes={notes} />}</Stack.Screen>
           {notes.length ? notes.map((value, index) => <Stack.Screen key={index} name={standardScreenName(value.mtime)} options={{ title: '', headerStyle: styles.homeScreenHeader }}>{props=><Note {...props} note={value} />}</Stack.Screen> ) : <></>}
           <Stack.Screen name='newNote' options={{title:'', headerStyle: styles.homeScreenHeader }} component={NewNote}/>
         </Stack.Navigator>
       </NavigationContainer>
-    </NotesProvider>
+
 
   );
 };
