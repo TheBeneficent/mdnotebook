@@ -62,6 +62,7 @@ const NoteItem = (props) => {
     RNFS.unlink(props.note.path).then(() => {
       setModalVisible(false);
       ToastAndroid.show("Note deleted successfully!", ToastAndroid.SHORT);
+      props.navigation.navigate('notes',{refresh: String(new Date())});
     }).catch(e => alert("Error deleting the note!"));
   };
 
@@ -73,11 +74,12 @@ const NoteItem = (props) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
           setModalVisible(!modalVisible);
         }}
         onDismiss={() => setModalVisible(false)}
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
       >
         <TouchableOpacity activeOpacity={1} onPressOut={() => setModalVisible(false)} style={styles.container}>
           <View style={styles.centeredView}>

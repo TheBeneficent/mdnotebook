@@ -1,22 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  Button,
-  Pressable,
-} from "react-native";
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from "react-native/Libraries/NewAppScreen";
+import {  SafeAreaView,  ScrollView,  StatusBar,  StyleSheet,  Text,  useColorScheme,  View,  Button,  Pressable,} from "react-native";
+import {  Colors,  DebugInstructions,  Header,  LearnMoreLinks,  ReloadInstructions,} from "react-native/Libraries/NewAppScreen";
 import "react-native-gesture-handler";
 import { NavigationContainer, useFocusEffect, useIsFocused } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -42,16 +26,16 @@ const HomeScreen = (props) => {
       let newResult = result.map(value => ({ ...value, checked: false }));
       setNotes(newResult);
     }).catch(e => alert("An error occurred reading directory!"));
-    console.log("home foc notes len: ", notes.length);
-  }, []));
+    console.log("home foc notes len: ", notes.length, '\nparams: ', props.route.params);
+  }, [props.route.params+props.navigation]));
 
-  React.useEffect(()=>{
+  /*React.useEffect(()=>{
     props.navigation.addListener(
       'didFocus',
       payload => {
 
       });
-  },[]);
+  },[]);*/
 
 
   const handleNewBtn = () => {
@@ -61,7 +45,7 @@ const HomeScreen = (props) => {
 
   };
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     props.navigation.setOptions({
       headerRight: () => (
         <View style={styles.homeHeaderBtnCont}>
@@ -74,11 +58,9 @@ const HomeScreen = (props) => {
   }, [props.navigation]);
 
   return (
-    <NotesProvider value={notes}>
       <ScrollView style={styles.homeScreen}>
         <ListNotes notes={notes} navigation={props.navigation} />
       </ScrollView>
-    </NotesProvider>
   );
 };
 export default HomeScreen;
