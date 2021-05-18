@@ -1,24 +1,18 @@
-import React, { useEffect, useState } from "react";
-import {  SafeAreaView,  ScrollView,  StatusBar,  StyleSheet,  Text,  useColorScheme,  View,  Button,  Pressable,} from "react-native";
-import {  Colors,  DebugInstructions,  Header,  LearnMoreLinks,  ReloadInstructions,} from "react-native/Libraries/NewAppScreen";
+import React from "react";
+import {  ScrollView, Text, View,  Pressable,} from "react-native";
 import "react-native-gesture-handler";
 import { NavigationContainer, useFocusEffect, useIsFocused } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import showdown from "showdown";
-import WebView from "react-native-webview";
 import styles from "../assets/styles";
 import RNFS from "react-native-fs";
-import { NotesContext, NotesConsumer, ReRenderContext, NotesProvider, ReRenderProvider } from "./Contexts";
-import NoteItem from "./NoteItem";
-import { DIR, newName, standardScreenName } from "../constants/constants";
+import {ReRenderProvider } from "./Contexts";
+import { DIR, newName } from "../constants/constants";
 import ListNotes from "./ListNotes";
 
 
 const HomeScreen = (props) => {
 
   const [headerBtn, setHeaderBtn] = React.useState({ title: "+", style: styles.addNewBtn });
-  const [reRender, setReRender] = React.useState(false);
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = React.useState([]);
 
   const isFocused = useIsFocused();
   useFocusEffect(React.useCallback(() => {
@@ -26,22 +20,13 @@ const HomeScreen = (props) => {
       let newResult = result.map(value => ({ ...value, checked: false }));
       setNotes(newResult);
     }).catch(e => alert("An error occurred reading directory!"));
-    console.log("home foc notes len: ", notes.length, '\nparams: ', props.route.params);
+    console.log("home foc notes len: ", notes.length, '\tparams: ', props.route.params);
   }, [props.route.params+props.navigation]));
-
-  /*React.useEffect(()=>{
-    props.navigation.addListener(
-      'didFocus',
-      payload => {
-
-      });
-  },[]);*/
-
 
   const handleNewBtn = () => {
     const noteName = newName("note-");
     const path = DIR + `/${noteName}.md`;
-    RNFS.writeFile(path, "", "utf8").then(success => props.navigation.navigate("newNote", { path: path })).catch(e => alert("Problem creating or loading the note!"));
+    RNFS.writeFile(path, "", "utf8").then(success => props.navigation.navigate("note", { note: {path: path, isFile:()=>true, name: noteName, checked: false}})).catch(e => alert("Problem creating or loading the note!"));
 
   };
 
@@ -58,11 +43,9 @@ const HomeScreen = (props) => {
   }, [props.navigation]);
 
   return (
-    <ReRenderProvider value={props.route.params}>
       <ScrollView style={styles.homeScreen}>
         <ListNotes notes={notes} navigation={props.navigation} />
       </ScrollView>
-    </ReRenderProvider>
   );
 };
 export default HomeScreen;

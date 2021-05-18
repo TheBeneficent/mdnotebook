@@ -1,37 +1,19 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  ToastAndroid,
-  StatusBar,
-  StyleSheet,
-  Text,
-  Modal,
-  useColorScheme,
-  View,
-  TouchableOpacity,
-} from "react-native";
-import showdown from "showdown";
-import WebView from "react-native-webview";
+import {  Pressable,  ToastAndroid,  Text,  Modal,  useColorScheme,  View,  TouchableOpacity} from "react-native";
 import RNFS from "react-native-fs";
 import CheckBox from "@react-native-community/checkbox";
 import styles from "../assets/styles";
-import { standardScreenName } from "../constants/constants";
-import DeleteDial from "./DeleteDial";
 
 const NoteItem = (props) => {
   const [prevText, setPrevText] = useState("");
   const [noteCheck, setNoteCheck] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-// console.log('NoteItem props: ', props.note)
   useEffect(() => {
     RNFS.readFile(props.note.path, "utf8").then(res => setPrevText(res)).catch(e => {
       alert("An error occured reading files!");
       props.navigation.navigate("notes");
     });
-
+console.log('noteitem refresh')
   }, []);
 
   const NotePrev = (props) => {

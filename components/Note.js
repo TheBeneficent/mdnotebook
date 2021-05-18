@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
-import {  SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, Modal, Pressable, Text, TextInput, ToastAndroid, useColorScheme, View, useWindowDimensions } from "react-native";
-import WebView from "react-native-webview";
+import {  SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, Modal, Pressable, Text, TextInput, ToastAndroid, useColorScheme, View, useWindowDimensions } from "react-native";
+import InputScrollView from "react-native-input-scroll-view";
 import RNFS from "react-native-fs";
 import styles from '../assets/styles';
 import { md2html } from '../constants/constants';
-import InputScrollView from 'react-native-input-scroll-view';
-import { Button, Menu, Divider, Provider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import HTML from 'react-native-render-html';
-import DeleteDial from './DeleteDial';
 
 const Note = props => {
   const [content, setContent] = useState('');
-  const [showPreview, setShowPreview] = useState(true);
+  const [showPreview, setShowPreview] = useState(false);
   const [saveAction, setSaveAction] = useState(false);
   const [renderedPreview, setRenderedPreview] = useState('<html dir="auto">' + md2html(content) + '</html>');
   const [visible, setVisible] = React.useState(false);
@@ -25,7 +22,7 @@ const Note = props => {
     props.navigation.setOptions({
       headerRight: () => (
         <View style={styles.homeHeaderBtnCont}>
-          <Button onPress={handlePreviewToggleButton}>{showPreview ? 'Edit' : 'Preview'}</Button>
+          <Icon.Button onPress={handlePreviewToggleButton} name='trash' size={25} style={styles.deleteIcon} />
           <Icon.Button onPress={handleDeleteNote} name='trash' size={25} style={styles.deleteIcon} />
           {/* <Button onPress={handleDeleteNote}><Icon name='trash' size={30} style={styles.deleteIcon} /></Button> */}
         </View>
@@ -33,6 +30,7 @@ const Note = props => {
       )
     });
     RNFS.readFile(props.route.params.note.path, 'utf8').then(res => {setContent(String(res)); setRenderedPreview('<html dir="auto">' + md2html(res) + '</html>')}).catch(e => alert('Error reading the file!'));
+    console.log('note refresh')
     return ()=>{console.log('note back')}
   }, [props.navigation]);
 
@@ -56,6 +54,7 @@ const Note = props => {
     console.log('prev: ', test);
     // setRenderedPreview('<html dir="auto">' + md2html(content) + '</html>');
     setTest(!test);
+    console.log(content);
 
   }
 
@@ -68,7 +67,7 @@ const Note = props => {
   }
 
   return (
-    <ScrollView style={{flex:1}}>
+    <ScrollView  style={styles.note}>
       <Modal
         animationType="slide"
         transparent={true}
@@ -101,20 +100,17 @@ const Note = props => {
         </View>
         </TouchableOpacity>
       </Modal>
-    {/*{ showPreview ?*/}
+    { showPreview ?
       <HTML source={{ html: renderedPreview }} contentWidth={useWindowDimensions().width} />
-      <Icon.Button onPress={handlePreviewToggleButton} name='trash' size={25} style={styles.deleteIcon} />
-    {/*  :*/}
-    {/*<Provider>*/}
-    {/*<View style={styles.note}>*/}
+      :
+    <View >
 
-    {/*    <InputScrollView>*/}
-    {/*      <TextInput onChangeText={text => handleContentChange(text)} value={content} multiline={true} style={styles.noteInput} />*/}
-    {/*    </InputScrollView>*/}
+        <InputScrollView>
+          <TextInput onChangeText={text => handleContentChange(text)} value={content} multiline={true} style={styles.noteInput} />
+        </InputScrollView>
 
-    {/*</View>*/}
-    {/*</Provider>*/}
-    {/*}*/}
+    </View>
+    }
     </ScrollView>
   );
 }
