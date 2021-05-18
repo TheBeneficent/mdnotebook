@@ -51,7 +51,7 @@ const NoteItem = (props) => {
   };
 
   const pressHandle = () => {
-    props.navigation.navigate(standardScreenName(props.note.mtime));
+    props.navigation.navigate('note',{note: props.note});
   };
 
   const longPressHandle = () => {

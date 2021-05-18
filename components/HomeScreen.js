@@ -8,7 +8,7 @@ import showdown from "showdown";
 import WebView from "react-native-webview";
 import styles from "../assets/styles";
 import RNFS from "react-native-fs";
-import { NotesContext, NotesConsumer, ReRenderContext, NotesProvider } from "./Contexts";
+import { NotesContext, NotesConsumer, ReRenderContext, NotesProvider, ReRenderProvider } from "./Contexts";
 import NoteItem from "./NoteItem";
 import { DIR, newName, standardScreenName } from "../constants/constants";
 import ListNotes from "./ListNotes";
@@ -58,9 +58,11 @@ const HomeScreen = (props) => {
   }, [props.navigation]);
 
   return (
+    <ReRenderProvider value={props.route.params}>
       <ScrollView style={styles.homeScreen}>
         <ListNotes notes={notes} navigation={props.navigation} />
       </ScrollView>
+    </ReRenderProvider>
   );
 };
 export default HomeScreen;

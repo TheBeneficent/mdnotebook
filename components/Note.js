@@ -32,15 +32,15 @@ const Note = props => {
 
       )
     });
-    RNFS.readFile(props.note.path, 'utf8').then(res => {setContent(String(res)); setRenderedPreview('<html dir="auto">' + md2html(res) + '</html>')}).catch(e => alert('Error reading the file!'));
+    RNFS.readFile(props.route.params.note.path, 'utf8').then(res => {setContent(String(res)); setRenderedPreview('<html dir="auto">' + md2html(res) + '</html>')}).catch(e => alert('Error reading the file!'));
     return ()=>{console.log('note back')}
   }, [props.navigation]);
 
   useEffect(() => {
     const saveDelay = setTimeout(() => {
       if (saveAction) {
-        RNFS.unlink(props.note.path).then(() => console.log('deleted'));
-        RNFS.writeFile(props.note.path, content, 'utf8').then(success => ToastAndroid.show("Saved!", ToastAndroid.SHORT)).catch(e => ToastAndroid.show("Error, not saved!", ToastAndroid.SHORT));
+        RNFS.unlink(props.route.params.note.path).then(() => console.log('deleted'));
+        RNFS.writeFile(props.route.params.note.path, content, 'utf8').then(success => ToastAndroid.show("Saved!", ToastAndroid.SHORT)).catch(e => ToastAndroid.show("Error, not saved!", ToastAndroid.SHORT));
       }
 
     }, 500);
@@ -54,13 +54,13 @@ const Note = props => {
 
   const handlePreviewToggleButton = () => {
     console.log('prev: ', test);
-    setRenderedPreview('<html dir="auto">' + md2html(content) + '</html>');
+    // setRenderedPreview('<html dir="auto">' + md2html(content) + '</html>');
     setTest(!test);
 
   }
 
   const deleteHandle=()=>{
-    RNFS.unlink(props.note.path).then(() => {setModalVisible(false); props.navigation.navigate('notes',{refresh: String(new Date())}); ToastAndroid.show("Note deleted successfully!", ToastAndroid.SHORT)}).catch(e=>alert("Error deleting the note!"));
+    RNFS.unlink(props.route.params.note.path).then(() => {setModalVisible(false); props.navigation.navigate('notes',{refresh: String(new Date())}); ToastAndroid.show("Note deleted successfully!", ToastAndroid.SHORT)}).catch(e=>alert("Error deleting the note!"));
   }
 
   const handleDeleteNote=()=>{
@@ -103,6 +103,7 @@ const Note = props => {
       </Modal>
     {/*{ showPreview ?*/}
       <HTML source={{ html: renderedPreview }} contentWidth={useWindowDimensions().width} />
+      <Icon.Button onPress={handlePreviewToggleButton} name='trash' size={25} style={styles.deleteIcon} />
     {/*  :*/}
     {/*<Provider>*/}
     {/*<View style={styles.note}>*/}
