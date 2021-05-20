@@ -32,7 +32,7 @@ const Note = props => {
     RNFS.readFile(props.route.params.note.path, 'utf8').then(res => {setContent(String(res)); setRenderedPreview('<html dir="auto">' + md2html(res) + '</html>')}).catch(e => alert('Error reading the file!'));
     console.log('note refresh')
     return ()=>{console.log('note back')}
-  }, [props.navigation]);
+  }, []);
 
   useEffect(() => {
     const saveDelay = setTimeout(() => {
