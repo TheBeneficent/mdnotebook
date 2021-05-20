@@ -14,7 +14,7 @@ const NoteItem = (props) => {
       props.navigation.navigate("notes");
     });
 console.log('noteitem refresh')
-  }, []);
+  }, [props.note]);
 
   const NotePrev = (props) => {
     return (

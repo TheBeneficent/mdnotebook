@@ -4,10 +4,8 @@ import "react-native-gesture-handler";
 import { NavigationContainer, useFocusEffect, useIsFocused } from "@react-navigation/native";
 import styles from "../assets/styles";
 import RNFS from "react-native-fs";
-import {ReRenderProvider } from "./Contexts";
 import { DIR, newName } from "../constants/constants";
 import ListNotes from "./ListNotes";
-
 
 const HomeScreen = (props) => {
 
@@ -21,7 +19,7 @@ const HomeScreen = (props) => {
       setNotes(newResult);
     }).catch(e => alert("An error occurred reading directory!"));
     console.log("home foc notes len: ", notes.length, '\tparams: ', props.route.params);
-  }, [props.route.params+props.navigation]));
+  }, [props.route.params+props.navigation+isFocused]));
 
   const handleNewBtn = () => {
     const noteName = newName("note-");

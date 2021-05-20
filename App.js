@@ -23,12 +23,6 @@ const App = () => {
 
   const [notes, setNotes] = useState([]);
   useEffect(() => {
-    RNFS.readDir(DIR).then(result => {
-      let newResult = result.map(value => ({ ...value, checked: false }));
-      setNotes(newResult);
-      console.log("appjs refresh");
-    }).catch(e => alert("An error occurred reading directory!"));
-
 
   }, []);
 
@@ -39,8 +33,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="notes">
-        <Stack.Screen name="notes" options={{ title: "Notes", headerStyle: styles.homeScreenHeader }}>{props =>
-          <HomeScreen {...props} notes={notes} />}</Stack.Screen>
+        <Stack.Screen name="notes" options={{ title: "Notes", headerStyle: styles.homeScreenHeader }} component={HomeScreen} />
         <Stack.Screen name="note" options={{ title: "", headerStyle: styles.homeScreenHeader }} component={Note} />
       </Stack.Navigator>
     </NavigationContainer>
