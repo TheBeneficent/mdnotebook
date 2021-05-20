@@ -60,12 +60,18 @@ const styles = StyleSheet.create({
     },
     deleteIcon: {
       color: '#f70727',
-      backgroundColor: 'rgba(0, 200, 245, 0)'
+      backgroundColor: 'rgba(0, 200, 245, 0)',
+      paddingVertical: 2,
+      paddingHorizontal: 2,
+      margin: 5,
+      justifyContent: 'center',
+      alignItems: 'center'
     },
     homeHeaderBtnCont: {
       flexDirection: 'row',
       marginVertical: 'auto',
       marginHorizontal: 15,
+
     },
     addNewBtn: {
       backgroundColor: 'rgba(0, 200, 245, 0)',
@@ -78,6 +84,14 @@ const styles = StyleSheet.create({
       fontSize: 22,
 
     },
+  prevEditBtn:{
+    justifyContent:'center',
+    alignItems:'center',
+    margin: 10,
+    padding: 7,
+    backgroundColor:'rgba(225, 250, 0, 0.7)',
+    borderRadius: 7,
+  },
     centeredView: {
       flex: 1,
       justifyContent: "center",

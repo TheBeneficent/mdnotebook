@@ -22,7 +22,7 @@ const Note = props => {
     props.navigation.setOptions({
       headerRight: () => (
         <View style={styles.homeHeaderBtnCont}>
-          <Icon.Button onPress={handlePreviewToggleButton} name='trash' size={25} style={styles.deleteIcon} />
+          <Pressable onPress={handlePreviewToggleButton} style={styles.prevEditBtn}><Text>{showPreview ? 'Edit' : 'Preview'}</Text></Pressable>
           <Icon.Button onPress={handleDeleteNote} name='trash' size={25} style={styles.deleteIcon} />
           {/* <Button onPress={handleDeleteNote}><Icon name='trash' size={30} style={styles.deleteIcon} /></Button> */}
         </View>
@@ -32,7 +32,7 @@ const Note = props => {
     RNFS.readFile(props.route.params.note.path, 'utf8').then(res => {setContent(String(res)); setRenderedPreview('<html dir="auto">' + md2html(res) + '</html>')}).catch(e => alert('Error reading the file!'));
     console.log('note refresh')
     return ()=>{console.log('note back')}
-  }, []);
+  }, [showPreview]);
 
   useEffect(() => {
     const saveDelay = setTimeout(() => {
@@ -52,9 +52,8 @@ const Note = props => {
 
   const handlePreviewToggleButton = () => {
     console.log('prev: ', test);
-    // setRenderedPreview('<html dir="auto">' + md2html(content) + '</html>');
-    setTest(!test);
-    console.log(content);
+    setRenderedPreview('<html dir="auto">' + md2html(content) + '</html>');
+    setShowPreview(!showPreview);
 
   }
 
@@ -101,7 +100,7 @@ const Note = props => {
         </TouchableOpacity>
       </Modal>
     { showPreview ?
-      <HTML source={{ html: renderedPreview }} contentWidth={useWindowDimensions().width} />
+      <HTML source={{ html: renderedPreview }}  />
       :
     <View >
 
