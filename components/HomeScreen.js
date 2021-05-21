@@ -18,7 +18,6 @@ const HomeScreen = (props) => {
       let newResult = result.map(value => ({ ...value, checked: false }));
       setNotes(newResult);
     }).catch(e => alert("An error occurred reading directory!"));
-    console.log("home foc notes len: ", notes.length, '\tparams: ', props.route.params);
   }, [props.route.params+props.navigation]));
 
   const handleNewBtn = () => {

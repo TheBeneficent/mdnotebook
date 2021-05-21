@@ -30,14 +30,13 @@ const Note = props => {
       )
     });
     RNFS.readFile(props.route.params.note.path, 'utf8').then(res => {setContent(String(res)); setRenderedPreview('<html dir="auto">' + md2html(res) + '</html>')}).catch(e => alert('Error reading the file!'));
-    console.log('note refresh')
-    return ()=>{console.log('note back')}
+    return ()=>{}
   }, [showPreview]);
 
   useEffect(() => {
     const saveDelay = setTimeout(() => {
       if (saveAction) {
-        RNFS.unlink(props.route.params.note.path).then(() => console.log('deleted'));
+        RNFS.unlink(props.route.params.note.path).then(() => {});
         RNFS.writeFile(props.route.params.note.path, content, 'utf8').then(success => ToastAndroid.show("Saved!", ToastAndroid.SHORT)).catch(e => ToastAndroid.show("Error, not saved!", ToastAndroid.SHORT));
       }
 
@@ -51,7 +50,6 @@ const Note = props => {
   }
 
   const handlePreviewToggleButton = () => {
-    console.log('prev: ', test);
     setRenderedPreview('<html dir="auto">' + md2html(content) + '</html>');
     setShowPreview(!showPreview);
 

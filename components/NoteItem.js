@@ -13,7 +13,6 @@ const NoteItem = (props) => {
       alert("An error occured reading files!");
       props.navigation.navigate("notes");
     });
-console.log('noteitem refresh')
   }, [props.note]);
 
   const NotePrev = (props) => {

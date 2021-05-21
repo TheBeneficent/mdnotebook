@@ -21,13 +21,13 @@ const NewNote=({route, navigation})=>{
     setShowPreview(!showPreview);
   }
 
-  /* React.useLayoutEffect(()=>{
+  React.useLayoutEffect(()=>{
     navigation.setOptions({
       headerRight: ()=>(
         <Button onPress={handlePreviewToggleButton} title={showPreview ? 'Edit' : 'Preview'} />
       )
     })
-  },[navigation]); */
+  },[navigation]);
 
   useEffect(()=>{
     RNFS.readFile(route.params.path, 'utf8').then(res=>setContent(String(res))).catch(e=>alert('Error reading the file!'));
@@ -36,12 +36,11 @@ const NewNote=({route, navigation})=>{
   useEffect(() => {
     const saveDelay = setTimeout(() => {
       if(saveAction){
-        RNFS.unlink(route.params.path).then(()=>console.log('deleted'));
+        RNFS.unlink(route.params.path).then(()=>{});
         RNFS.writeFile(route.params.path, content, 'utf8').then(success=>ToastAndroid.show("Saved!", ToastAndroid.SHORT)).catch(e=>ToastAndroid.show("Error, not saved!", ToastAndroid.SHORT));
       }
       
     }, 500);
-    console.log('content: ', content)
     return () => clearTimeout(saveDelay);
   }, [content]);
 
