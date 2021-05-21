@@ -2,6 +2,10 @@ import {StyleSheet, Dimensions} from 'react-native';
 const vw = Dimensions.get('window').width/100;
 const vh = Dimensions.get('window').height/100;
 const styles = StyleSheet.create({
+  container: {
+    width: 100*vw,
+    height: 100*vh,
+  },
     sectionContainer: {
       marginTop: 32,
       paddingHorizontal: 24,
@@ -30,8 +34,8 @@ const styles = StyleSheet.create({
       backgroundColor: 'rgba(0, 200, 245, 0.2)',
     },
     webView: {
-      marginTop: 20, 
-      width: 100*vw, 
+      marginTop: 20,
+      width: 100*vw,
       height: 100*vh
     },
     noteInput:{
@@ -57,12 +61,18 @@ const styles = StyleSheet.create({
     },
     deleteIcon: {
       color: '#f70727',
-      backgroundColor: 'rgba(0, 200, 245, 0)'
+      backgroundColor: 'rgba(0, 200, 245, 0)',
+      paddingVertical: 2,
+      paddingHorizontal: 2,
+      margin: 5,
+      justifyContent: 'center',
+      alignItems: 'center'
     },
     homeHeaderBtnCont: {
       flexDirection: 'row',
       marginVertical: 'auto',
       marginHorizontal: 15,
+
     },
     addNewBtn: {
       backgroundColor: 'rgba(0, 200, 245, 0)',
@@ -75,6 +85,14 @@ const styles = StyleSheet.create({
       fontSize: 22,
 
     },
+  prevEditBtn:{
+    justifyContent:'center',
+    alignItems:'center',
+    margin: 10,
+    padding: 7,
+    backgroundColor:'rgba(225, 250, 0, 0.7)',
+    borderRadius: 7,
+  },
     centeredView: {
       flex: 1,
       justifyContent: "center",

@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {  SafeAreaView, ScrollView, StatusBar, StyleSheet, Modal, Pressable, Text, TextInput, ToastAndroid, useColorScheme, View, useWindowDimensions } from "react-native";
-import WebView from "react-native-webview";
+import {  SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, Modal, Pressable, Text, TextInput, ToastAndroid, useColorScheme, View, useWindowDimensions } from "react-native";
+import InputScrollView from "react-native-input-scroll-view";
 import RNFS from "react-native-fs";
 import styles from '../assets/styles';
 import { md2html } from '../constants/constants';
-import InputScrollView from 'react-native-input-scroll-view';
-import { Button, Menu, Divider, Provider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import HTML from 'react-native-render-html';
-import DeleteDial from './DeleteDial';
-import { Navigation } from 'react-native-navigation';
 
 const Note = props => {
   const [content, setContent] = useState('');
@@ -20,6 +16,34 @@ const Note = props => {
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
   const [modalVisible, setModalVisible]=useState(false);
+  const [test,setTest]=useState(false);
+
+  React.useEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <View style={styles.homeHeaderBtnCont}>
+          <Pressable onPress={handlePreviewToggleButton} style={styles.prevEditBtn}><Text>{showPreview ? 'Edit' : 'Preview'}</Text></Pressable>
+          <Icon.Button onPress={handleDeleteNote} name='trash' size={25} style={styles.deleteIcon} />
+          {/* <Button onPress={handleDeleteNote}><Icon name='trash' size={30} style={styles.deleteIcon} /></Button> */}
+        </View>
+
+      )
+    });
+    RNFS.readFile(props.route.params.note.path, 'utf8').then(res => {setContent(String(res)); setRenderedPreview('<html dir="auto">' + md2html(res) + '</html>')}).catch(e => alert('Error reading the file!'));
+    console.log('note refresh')
+    return ()=>{console.log('note back')}
+  }, [showPreview]);
+
+  useEffect(() => {
+    const saveDelay = setTimeout(() => {
+      if (saveAction) {
+        RNFS.unlink(props.route.params.note.path).then(() => console.log('deleted'));
+        RNFS.writeFile(props.route.params.note.path, content, 'utf8').then(success => ToastAndroid.show("Saved!", ToastAndroid.SHORT)).catch(e => ToastAndroid.show("Error, not saved!", ToastAndroid.SHORT));
+      }
+
+    }, 500);
+    return () => clearTimeout(saveDelay);
+  }, [content]);
 
   const handleContentChange = (text) => {
     setSaveAction(true);
@@ -27,77 +51,33 @@ const Note = props => {
   }
 
   const handlePreviewToggleButton = () => {
-    console.log('prev: ', showPreview);
+    console.log('prev: ', test);
     setRenderedPreview('<html dir="auto">' + md2html(content) + '</html>');
     setShowPreview(!showPreview);
+
   }
 
   const deleteHandle=()=>{
-    RNFS.unlink(props.note.path).then(() => {setModalVisible(false); props.navigation.goBack(); ToastAndroid.show("Note deleted successfully!", ToastAndroid.SHORT)}).catch(e=>alert("Error deleting the note!"));
+    RNFS.unlink(props.route.params.note.path).then(() => {setModalVisible(false); props.navigation.navigate('notes',{refresh: String(new Date())}); ToastAndroid.show("Note deleted successfully!", ToastAndroid.SHORT)}).catch(e=>alert("Error deleting the note!"));
   }
 
   const handleDeleteNote=()=>{
     setModalVisible(true);
   }
 
-  /* React.useLayoutEffect(() => {
-    props.navigation.setOptions({
-      headerRight: () => (
-        <View style={styles.homeHeaderBtnCont}>
-          <Button onPress={handlePreviewToggleButton}>{showPreview ? 'Edit' : 'Preview'}</Button>
-          <Icon.Button onPress={handleDeleteNote} name='trash' size={25} style={styles.deleteIcon} />
-          
-        </View>
-        
-      )
-    })
-  }, [props.navigation]); */
-
-
-  useEffect(() => {
-    RNFS.readFile(props.note.path, 'utf8').then(res => {setContent(String(res)); setRenderedPreview('<html dir="auto">' + md2html(res) + '</html>')}).catch(e => alert('Error reading the file!'));
-
-    const listener = {
-      componentDidAppear: () => {
-        console.log('RNN', `componentDidAppear`);
-        
-      },
-      componentDidDisappear: () => {
-        console.log('RNN', `componentDidDisappear`);
-        
-      }
-    }
-    const unsubscribe = Navigation.events().registerComponentListener(listener, props.componentId);
-    return () => {
-      // Make sure to unregister the listener during cleanup
-      unsubscribe.remove();
-    };
-
-  }, []);
-
-  useEffect(() => {
-    const saveDelay = setTimeout(() => {
-      if (saveAction) {
-        RNFS.unlink(props.note.path).then(() => console.log('deleted'));
-        RNFS.writeFile(props.note.path, content, 'utf8').then(success => ToastAndroid.show("Saved!", ToastAndroid.SHORT)).catch(e => ToastAndroid.show("Error, not saved!", ToastAndroid.SHORT));
-      }
-
-    }, 500);
-    console.log('content: ', content)
-    return () => clearTimeout(saveDelay);
-  }, [content]);
-
   return (
-    <ScrollView style={{flex:1}}>
+    <ScrollView  style={styles.note}>
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
           setModalVisible(!modalVisible);
         }}
+        onDismiss={() => setModalVisible(false)}
+        onRequestClose={() => setModalVisible(false)}
       >
+        <TouchableOpacity activeOpacity={1} onPressOut={() => setModalVisible(false)} style={styles.container}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Are you sure to delete this note?</Text>
@@ -117,21 +97,18 @@ const Note = props => {
             </View>
           </View>
         </View>
+        </TouchableOpacity>
       </Modal>
-    { showPreview ? 
-      <HTML source={{ html: renderedPreview }} contentWidth={useWindowDimensions().width} />
+    { showPreview ?
+      <HTML source={{ html: renderedPreview }}  />
       :
-    <Provider>
-    <View style={styles.note}>
-    
-      
-        
+    <View >
+
         <InputScrollView>
-          <TextInput onChangeText={text => handleContentChange(text)} value={content} multiline={true} style={styles.noteInput} /> 
+          <TextInput onChangeText={text => handleContentChange(text)} value={content} multiline={true} style={styles.noteInput} />
         </InputScrollView>
-        
+
     </View>
-    </Provider>
     }
     </ScrollView>
   );

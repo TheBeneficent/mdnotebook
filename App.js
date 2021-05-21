@@ -4,20 +4,16 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
-import { Colors, DebugInstructions, Header, LearnMoreLinks, ReloadInstructions, } from "react-native/Libraries/NewAppScreen";
+import { useColorScheme} from "react-native";
+import {Colors} from "react-native/Libraries/NewAppScreen";
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { DIR, standardScreenName } from "./constants/constants";
-import showdown from "showdown";
-import WebView from "react-native-webview";
+import { DIR } from "./constants/constants";
 import RNFS from "react-native-fs";
-import NoteItem from "./components/NoteItem";
-import Note from './components/Note';
-import HomeScreen from './components/HomeScreen';
-import styles from './assets/styles';
-import {NotePathProvider, NotesProvider} from './components/Contexts';
+import Note from "./components/Note";
+import HomeScreen from "./components/HomeScreen";
+import styles from "./assets/styles";
 import NewNote from "./components/NewNote";
 
 const Stack = createStackNavigator();
@@ -27,39 +23,20 @@ const App = () => {
 
   const [notes, setNotes] = useState([]);
   useEffect(() => {
-    RNFS.readDir(DIR).then(result => {
-      let newResult=result.map(value=>({...value, checked:false}));
-      setNotes(newResult);
-    }).catch(e => alert('An error occurred reading directory!'));
-
 
   }, []);
-  console.log('notes: ', notes);
-  // notes.map((value, index) =>console.log('note map: ', value))
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const updateNotes=(index,checkStat)=>{
-    let tempNotes=notes;
-    tempNotes[index].checked=checkStat;
-    setNotes(tempNotes);
-  }
-
   return (
-    <NotesProvider value={{notes:notes, updateNotes:updateNotes}}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="notes">
-          <Stack.Screen name="notes" options={{ title: "Notes", headerStyle:styles.homeScreenHeader}} component={HomeScreen}/>
-          {notes.length ? notes.map((value, index) => <Stack.Screen key={index} name={standardScreenName(value.mtime)} options={{ title: '', headerStyle: styles.homeScreenHeader }}>{props=><Note {...props} note={value} />}</Stack.Screen> ) : <></>}
-          <Stack.Screen name='newNote' options={{title:'', headerStyle: styles.homeScreenHeader }} component={NewNote}/>
-        </Stack.Navigator>
-      </NavigationContainer>
-
-
-    </NotesProvider>
-
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="notes">
+        <Stack.Screen name="notes" options={{ title: "Notes", headerStyle: styles.homeScreenHeader }} component={HomeScreen} />
+        <Stack.Screen name="note" options={{ title: "", headerStyle: styles.homeScreenHeader }} component={Note} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 

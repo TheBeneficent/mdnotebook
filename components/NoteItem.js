@@ -1,111 +1,94 @@
 import React, { useEffect, useState } from "react";
-import {Button, Pressable, SafeAreaView, ScrollView, ToastAndroid, StatusBar, StyleSheet, Text, Modal, useColorScheme, View,} from "react-native";
-import showdown from "showdown";
-import WebView from "react-native-webview";
+import {  Pressable,  ToastAndroid,  Text,  Modal,  useColorScheme,  View,  TouchableOpacity} from "react-native";
 import RNFS from "react-native-fs";
-import CheckBox from '@react-native-community/checkbox';
-import styles from '../assets/styles';
-import { standardScreenName } from "../constants/constants";
-import DeleteDial from './DeleteDial';
-import { Navigation } from 'react-native-navigation';
-import {ReRenderProvider} from '../components/Contexts';
+import CheckBox from "@react-native-community/checkbox";
+import styles from "../assets/styles";
 
-const NoteItem = ( props) => {
-  const [prevText, setPrevText] = useState('');
-  const [noteCheck, setNoteCheck]=useState(false);
-  const [modalVisible, setModalVisible]=useState(false);
-  const [reRender, setReRender]=useState(false);
+const NoteItem = (props) => {
+  const [prevText, setPrevText] = useState("");
+  const [noteCheck, setNoteCheck] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  useEffect(() => {
+    RNFS.readFile(props.note.path, "utf8").then(res => setPrevText(res)).catch(e => {
+      alert("An error occured reading files!");
+      props.navigation.navigate("notes");
+    });
+console.log('noteitem refresh')
+  }, [props.note]);
 
-// console.log('NoteItem props: ', props.note)
-  useEffect(()=>{
-    RNFS.readFile(props.note.path,'utf8').then(res=>setPrevText(res)).catch(e=>{alert('An error occured reading files!'); props.navigation.navigate('notes')});
-  },[]);
-
-  const NotePrev=(props)=>{
-    return(
+  const NotePrev = (props) => {
+    return (
       <React.Fragment>
         <View style={styles.noteItem}>
-          <Text style={styles.noteItemText} numberOfLines={3} ellipsizeMode='tail'>{trunc(prevText)}</Text>
+          <Text style={styles.noteItemText} numberOfLines={3} ellipsizeMode="tail">{trunc(prevText)}</Text>
           {/* <CheckBox disabled={false} value={noteCheck} /> */}
         </View>
       </React.Fragment>
-    )
-  }
+    );
+  };
 
 
   const trunc = str => {
     return str;
-  }
+  };
 
-  const pressHandle=()=>{
-    Navigation.push(props.componentId, {
-      component: {
-        name:'Note',
-        options:{
-          topBar:{
-            title:{
-              name:'Note'
-            }
-          }
-        },
-        passProps:{
-          note: props.note
-        }
-      }
-    })
-    // props.navigation.navigate(standardScreenName(props.note.mtime))
-  }
+  const pressHandle = () => {
+    props.navigation.navigate('note',{note: props.note});
+  };
 
-  const longPressHandle=()=>{
+  const longPressHandle = () => {
     setModalVisible(true);
-  }
+  };
 
-  const deleteHandle=()=>{
-    
-    RNFS.unlink(props.note.path).then(() => {setModalVisible(false); ToastAndroid.show("Note deleted successfully!", ToastAndroid.SHORT)}).catch(e=>alert("Error deleting the note!"));
-    // setReRender(!reRender);
-    Navigation.navigate('Note');
-    
-  }
+  const deleteHandle = () => {
+    RNFS.unlink(props.note.path).then(() => {
+      setModalVisible(false);
+      ToastAndroid.show("Note deleted successfully!", ToastAndroid.SHORT);
+      props.navigation.navigate('notes',{refresh: String(new Date())});
+    }).catch(e => alert("Error deleting the note!"));
+  };
 
   //const handleNoteItemPress=
   return (
-    <ReRenderProvider value={reRender}>
     <View>
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
           setModalVisible(!modalVisible);
         }}
+        onDismiss={() => setModalVisible(false)}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Are you sure to delete this note?</Text>
-            <View>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={deleteHandle}
-            >
-              <Text style={styles.textStyle}>YES</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>NO</Text>
-            </Pressable>
+        <TouchableOpacity activeOpacity={1} onPressOut={() => setModalVisible(false)} style={styles.container}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Are you sure to delete this note?</Text>
+              <View>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={deleteHandle}
+                >
+                  <Text style={styles.textStyle}>YES</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <Text style={styles.textStyle}>NO</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
       <Pressable onPress={pressHandle} onLongPress={longPressHandle}>
         <NotePrev />
-        </Pressable>
+      </Pressable>
     </View>
-    </ReRenderProvider>
   );
 
 };
